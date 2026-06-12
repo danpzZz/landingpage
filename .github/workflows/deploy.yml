@@ -1,4 +1,4 @@
-name: Python application
+name: Landing PAGE
 
 on:
   push:
@@ -22,35 +22,33 @@ jobs:
     - name: Install dependencies
       run: pip install -r requirements.txt
     
-    - name: Test with pytest
-      run: pytest
-    
-    
     - name: Costruir imagen de docker
-      run: docker build -t ghcr.io/danpzZz/landing:1.0.0
+      run: docker build -t ghcr.io/byronmoreno/landing:1.0.0 .
     
     - name: Login en GitHub Container Registry
       run: echo "${{ secrets.GHCR_PATH }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
     
     - name: Publicar la imagen creada
-      run: docker push ghcr.io/danpzZz/landing:1.0.0
+      run: docker push ghcr.io/byronmoreno/landing:1.0.0
 
-     - name: 🧾 Mostrar variables básicas (solo locales, no secretos)
+    - name: 🧾 Mostrar variables básicas (solo locales, no secretos)
       run: |
         echo "Probando conexión SSH con:"
-        echo "Host: ${{ secrets.GHCR_PATH }}"
-        echo "Usuario: ${{ secrets.GHCR_USER }}"
-        echo "Puerto: ${{ secrets.GHCR_PORTUPS }}"
-        echo "Password: ${{ secrets.GHCR_PASSWORD }}"
+        echo "Host: ${{ secrets.VPS_HOST }}"
+        echo "Usuario: ${{ secrets.VPS_USER }}"
+        echo "Puerto: ${{ secrets.VPS_SSH_PORT }}"
+        echo "Password: ${{ secrets.VPS_PASSWORD }}"
+    
     - name: 🧪 Probar conexión SSH
       uses: appleboy/ssh-action@v1
       with:
-        host: ${{ secrets.GHCR_PATH }}
-        username: ${{ secrets.GHCR_USER }}
-        password: ${{ secrets.GHCR_PASSWORD }}
-        port: ${{ secrets.GHCR_PORTUPS }}
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        password: ${{ secrets.VPS_PASSWORD }}
+        port: ${{ secrets.VPS_SSH_PORT }}
         script: |
           echo "✅ Conexión exitosa desde GitHub Actions"
           hostname
           whoami
           uptime
+        
